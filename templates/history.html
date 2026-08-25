@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recent Checks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+    <div class="nav-brand">
+        <div class="brand-name">VeriSight AI</div>
+        <div class="brand-tagline">See Beyond the Fake.</div>
+    </div>
+    <a href="/" class="btn btn-primary nav-back-btn">Back to Home Page -></a>
+    </nav>
+
+    {% set total = records|length %}
+    {% set real_count = records|selectattr('1', 'equalto', 'Real')|list|length %}
+    {% set fake_count = records|selectattr('1', 'equalto', 'Fake')|list|length %}
+    {% set real_pct = (real_count / total * 100) if total > 0 else 0 %}
+
+    <section class="section">
+        <div class="section-title" style="padding-bottom: 35px;">Recent Checks</div>
+
+
+        <!-- Pie chart + stats -->
+        <div class="history-overview">
+            <div class="pie-wrap">
+                <div class="pie-chart" style="background: conic-gradient(var(--real) 0% {{ real_pct }}%, var(--fake) {{ real_pct }}% 100%);">
+                    <div class="pie-center">
+                        <div class="pie-total">{{ total }}</div>
+                        <div class="pie-total-label">Checks</div>
+                    </div>
+                </div>
+                <div class="pie-legend">
+                    <div class="legend-item"><span class="legend-dot dot-real"></span> Real ({{ real_count }})</div>
+                    <div class="legend-item"><span class="legend-dot dot-fake"></span> Fake ({{ fake_count }})</div>
+                </div>
+            </div>
+
+            <div class="stats-col">
+                <div class="stat-card stat-card-real">
+                    <div class="stat-icon">✓</div>
+                    <div>
+                        <div class="stat-value stat-real">{{ real_count }}</div>
+                        <div class="stat-label">Marked Real</div>
+                    </div>
+                </div>
+                <div class="stat-card stat-card-fake">
+                    <div class="stat-icon">!</div>
+                    <div>
+                        <div class="stat-value stat-fake">{{ fake_count }}</div>
+                        <div class="stat-label">Marked Fake</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="filter-tabs" style="padding-top:25px;padding-bottom: 15px;">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Image">🖼️ Image</button>
+            <button class="filter-btn" data-filter="Audio">🎧 Audio</button>
+            <button class="filter-btn" data-filter="Video">🎬 Video</button>
+        </div>
+
+        <!-- Card grid instead of table -->
+        <div class="history-cards" id="history-body">
+            {% for type, result, confidence, time in records %}
+            <div class="history-card {{ 'card-real' if result == 'Real' else 'card-fake' }}" data-type="{{ type }}">
+                <div class="history-card-icon">
+                    {% if type == 'Text' %}📰{% elif type == 'Image' %}🖼️{% elif type == 'Audio' %}🎧{% else %}🎬{% endif %}
+                </div>
+                <div class="history-card-body">
+                    <div class="history-card-top">
+                        <span class="history-card-type">{{ type }}</span>
+                        <span class="badge {{ 'badge-real' if result == 'Real' else 'badge-fake' }}">{{ result }}</span>
+                    </div>
+                    <div class="history-card-time">
+                        {{ time }}
+                        {% if confidence %} • {{ confidence }}% confidence{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state">No checks yet — run a detection to see it here.</div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <footer>VeriSight AI can make mistakes — always verify important content independently!</footer>
+
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.history-card[data-type]');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                cards.forEach(card => {
+                    card.style.display = (filter === 'all' || card.dataset.type === filter) ? 'flex' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

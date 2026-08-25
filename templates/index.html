@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FakeGuard AI — Fake Content Detector</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+        <div class="brand-name">VeriSight AI</div>
+        <div class="brand-tagline">See Beyond the Fake.</div>
+    </div>
+    <div class="nav-links">
+        <a href="/history" class="btn btn-primary nav-history-btn">History</a>
+    </div>
+    </nav>
+
+    <section class="hero">
+        <span class="hero-badge">AI-Powered Verification</span>
+        <h1>Know What's Real.</h1>
+        <p>Analyze images, audio, and video with our AI-powered fake content detection system.</p>
+    </section>
+
+    <section class="workspace" id="workspace">
+        <div class="workspace-heading">Choose what you want to verify</div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="image">
+                <span class="tab-icon">🖼️</span>
+                <span class="tab-label">Image</span>
+            </div>
+
+            <div class="tab" data-tab="audio">
+                <span class="tab-icon">🎧</span>
+                <span class="tab-label">Audio</span>
+            </div>
+
+            <div class="tab" data-tab="video">
+                <span class="tab-icon">🎬</span>
+                <span class="tab-label">Video</span>
+            </div>
+        </div>
+
+        <!-- IMAGE PANEL -->
+        <form class="panel active" id="panel-image" action="/predict-image" method="POST" enctype="multipart/form-data">
+            <div class="upload-zone" id="drop-image">
+                <div class="upload-icon">🖼️</div>
+                <div class="upload-title">Drop an image here</div>
+                <div class="upload-sub">or browse from your device — JPG, JPEG, PNG, WEBP</div>
+                <input type="file" name="image_file" id="input-image" accept=".jpg,.jpeg,.png,.webp">
+            </div>
+            <div class="file-preview" id="preview-image">
+                <img id="preview-image-thumb" src="" alt="">
+                <div class="file-info">
+                    <div class="file-name" id="preview-image-name"></div>
+                    <div class="file-size" id="preview-image-size"></div>
+                </div>
+                <button type="button" class="remove-btn" id="remove-image">✕</button>
+            </div>
+            <div class="error-msg" id="image-error">Please select a valid image file (JPG, PNG, WEBP).</div>
+            <div class="panel-actions">
+                <button type="submit" class="btn btn-primary" id="btn-image" disabled>Analyze Image</button>
+            </div>
+        </form>
+
+        <!-- AUDIO PANEL -->
+        <form class="panel" id="panel-audio" action="/predict-audio" method="POST" enctype="multipart/form-data">
+            <div class="upload-zone" id="drop-audio">
+                <div class="upload-icon">🎧</div>
+                <div class="upload-title">Drop an audio file here</div>
+                <div class="upload-sub">or browse from your device — MP3, WAV, FLAC</div>
+                <input type="file" name="audio_file" id="input-audio" accept=".mp3,.wav,.flac">
+            </div>
+            <div class="file-preview" id="preview-audio">
+                <div class="file-info">
+                    <div class="file-name" id="preview-audio-name"></div>
+                    <div class="file-size" id="preview-audio-size"></div>
+                    <audio id="preview-audio-player" controls></audio>
+                </div>
+                <button type="button" class="remove-btn" id="remove-audio">✕</button>
+            </div>
+            <div class="error-msg" id="audio-error">Please select a valid audio file (MP3, WAV, FLAC).</div>
+            <div class="panel-actions">
+                <button type="submit" class="btn btn-primary" id="btn-audio" disabled>Analyze Audio</button>
+            </div>
+        </form>
+
+        <!-- VIDEO PANEL -->
+        <form class="panel" id="panel-video" action="/predict-video" method="POST" enctype="multipart/form-data">
+            <div class="upload-zone" id="drop-video">
+                <div class="upload-icon">🎬</div>
+                <div class="upload-title">Drop a video here</div>
+                <div class="upload-sub">or browse from your device — MP4, MOV, AVI</div>
+                <input type="file" name="video_file" id="input-video" accept=".mp4,.mov,.avi">
+            </div>
+            <div class="file-preview" id="preview-video">
+                <video id="preview-video-thumb" muted></video>
+                <div class="file-info">
+                    <div class="file-name" id="preview-video-name"></div>
+                    <div class="file-size" id="preview-video-size"></div>
+                </div>
+                <button type="button" class="remove-btn" id="remove-video">✕</button>
+            </div>
+            <div class="error-msg" id="video-error">Please select a valid video file (MP4, MOV, AVI).</div>
+            <div class="panel-actions">
+                <button type="submit" class="btn btn-primary" id="btn-video" disabled>Analyze Video</button>
+            </div>
+        </form>
+    </section>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">Analyzing content...</div>
+    </div>
+
+    <footer>VeriSight AI can make mistakes — Please verify important content independently!</footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

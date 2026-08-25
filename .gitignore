@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+.vscode/
+.ipynb_checkpoints/
+
+uploads/*
+datasets/
+
+*.ipynb
+
+.env
+.keras/

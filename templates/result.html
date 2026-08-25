@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result — FakeGuard AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-logo"><span class="dot"></span> FakeGuard AI</a>
+        <div class="nav-links"><a href="/history">History</a></div>
+    </nav>
+
+    <div class="result-wrap">
+        <div class="result-card {% if result == 'Real' %}result-real{% else %}result-fake{% endif %}">
+            <div class="result-badge-icon">
+                {% if result == 'Real' %}✓{% else %}!{% endif %}
+            </div>
+
+            <div class="result-title">
+                {% if result == 'Real' %}REAL{% else %}FAKE{% endif %}
+            </div>
+
+            <div class="result-caption">
+                {% if result == 'Real' %}
+                    Content appears authentic
+                {% else %}
+                    Content appears suspicious
+                {% endif %}
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-row">
+                    <span class="summary-label">Detection Type</span>
+                    <span class="summary-value">{{ input_type }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Input</span>
+                    <span class="summary-value">{{ detail }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Prediction</span>
+                    <span class="summary-value">{{ result }}</span>
+                </div>
+                <div class="result-caption">
+                    {% if result == 'Real' %}
+                        Content appears authentic
+                    {% else %}
+                        Content appears suspicious
+                    {% endif %}
+                    <br>
+                    <strong>{{ confidence }}% confidence</strong>
+                </div>
+            </div>
+
+            <div class="result-actions">
+                <a href="/" class="btn btn-secondary">Analyze Another</a>
+                <a href="/" class="btn btn-primary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>Prediction accuracy: Up to 90% only!</footer>
+</body>
+</html>
