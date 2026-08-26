@@ -144,9 +144,7 @@ def history():
         print(f"Database error: {e}")
         return render_template('history.html', records=[])
 
+init_db()
+
 if __name__ == '__main__':
-    try:
-        init_db()  # Ensure this line is before app.run()
-        app.run(debug=True)
-    except sqlite3.Error as e:
-        print(f"Database initialization error: {e}")
+    app.run(debug=True)
