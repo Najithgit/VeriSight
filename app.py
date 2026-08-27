@@ -4,6 +4,9 @@ import os
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TF_NUM_INTRAOP_THREADS"] = "2"
 os.environ["TF_NUM_INTEROP_THREADS"] = "2"
+
+# Prevent Numba/LLVM JIT compilation on Render
+os.environ["NUMBA_DISABLE_JIT"] = "1"
 os.environ["NUMBA_DISABLE_COVERAGE"] = "1"
 os.environ["NUMBA_CACHE_DIR"] = "/tmp/numba_cache"
 
