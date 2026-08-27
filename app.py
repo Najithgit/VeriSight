@@ -341,68 +341,40 @@ def predict_image():
 # AUDIO PREDICTION
 # ---------------------------------------------------------
 
-@app.route("/predict-audio", methods=["POST"])
+@app.route('/predict-audio', methods=['POST'])
 def predict_audio():
-
-    filepath = None
-
     try:
+        print("AUDIO: request received", flush=True)
 
-        file = request.files["audio_file"]
-
-        if not file or file.filename == "":
-            raise ValueError("No audio file selected.")
-
-        filename = secure_filename(file.filename)
-
-        filepath = os.path.join(
-            UPLOAD_FOLDER,
-            filename
-        )
-
+        file = request.files['audio_file']
+        filepath = os.path.join(UPLOAD_FOLDER, file.filename)
         file.save(filepath)
 
-        features = extract_audio_features(
-            filepath
-        )
+        print("AUDIO: file saved", flush=True)
 
-        features = features[
-            np.newaxis,
-            ...,
-            np.newaxis
-        ]
+        print("AUDIO: starting feature extraction", flush=True)
+        features = extract_audio_features(filepath)
+        print(f"AUDIO: features extracted, shape={features.shape}", flush=True)
 
-        # Load model only when audio detection is requested
-        audio_model = get_audio_model()
+        features = features[np.newaxis, ..., np.newaxis]
+        print(f"AUDIO: final input shape={features.shape}", flush=True)
 
-        prediction = audio_model.predict(
-            features,
-            verbose=0
-        )[0][0]
+        print("AUDIO: starting model prediction", flush=True)
+        prediction = audio_model.predict(features, verbose=0)[0][0]
+        print(f"AUDIO: prediction completed = {prediction}", flush=True)
 
-        result = (
-            "Real"
-            if prediction > 0.5
-            else "Fake"
-        )
-
+        result = "Real" if prediction > 0.5 else "Fake"
         confidence = round(
-            float(
-                prediction
-                if prediction > 0.5
-                else (1 - prediction)
-            ) * 100,
+            float(prediction if prediction > 0.5 else (1 - prediction)) * 100,
             2
         )
 
-        log_check(
-            "Audio",
-            result,
-            confidence
-        )
+        log_check("Audio", result, confidence)
+
+        print("AUDIO: result generated successfully", flush=True)
 
         return render_template(
-            "result.html",
+            'result.html',
             result=result,
             input_type="Audio",
             detail=file.filename,
@@ -410,21 +382,8 @@ def predict_audio():
         )
 
     except Exception as e:
-
-        print(f"Audio prediction error: {e}")
-
-        return f"Audio prediction failed: {str(e)}", 500
-
-    finally:
-
-        if filepath and os.path.exists(filepath):
-
-            try:
-                os.remove(filepath)
-            except Exception:
-                pass
-
-        gc.collect()
+        print(f"AUDIO ERROR: {e}", flush=True)
+        return render_template('error.html')
 
 
 # ---------------------------------------------------------
