@@ -3,4 +3,6 @@ gunicorn
 numpy==2.2.6
 opencv-python-headless
 librosa==0.11.0
+numba
+llvmlite
 tensorflow==2.21.0
